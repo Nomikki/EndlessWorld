@@ -170,8 +170,10 @@ MonoBehaviour:
   sizeOfMap: 256
   terrainTexArray: {fileID: 0}
   terrainTextures:
-  - {fileID: 2800000, guid: 3ff75dcb69df93647a9b099ca33e2a51, type: 3}
+  - {fileID: 2800000, guid: ec15311caca04d841886b2099c728e6a, type: 3}
   - {fileID: 2800000, guid: 83391e24ac4aef841acd0d70b3ec3f9a, type: 3}
+  - {fileID: 2800000, guid: 85a4568d21a7b8a40890e07260e88e5e, type: 3}
+  - {fileID: 2800000, guid: cc3caf6528cb9bc4e82a8eaabcb51e87, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,7 +402,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fb10d62794a155740afb9c24cef945a1, type: 2}
+  - {fileID: 2100000, guid: 611638e45df8b4cf2ac11b29129001eb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -438,8 +440,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1109645672}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 11.48, z: 0}
-  m_LocalScale: {x: 100, y: 500, z: 100}
+  m_LocalPosition: {x: 100, y: 11, z: 100}
+  m_LocalScale: {x: 50, y: 50, z: 50}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -497,7 +499,7 @@ MonoBehaviour:
   mouseSensitivityY: 1
   clampLookY: 90
   invertLookY: 0
-  mouseSnappiness: 50
+  mouseSnappiness: 30
   gravity: -9.81
   isGrounded: 0
   inputKeyJump: 0
