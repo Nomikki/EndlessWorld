@@ -73,11 +73,11 @@ public class WorldGenerator : MonoBehaviour
   void PopulateTextureArray()
   {
     terrainTexArray = new Texture2DArray(32, 32, terrainTextures.Length, TextureFormat.ARGB32, false);
+    terrainTexArray.filterMode = FilterMode.Point;
 
     for (int i = 0; i < terrainTextures.Length; i++)
-    {
       terrainTexArray.SetPixels(terrainTextures[i].GetPixels(0), i, 0);
-    }
+      
     terrainTexArray.Apply();
 
   }

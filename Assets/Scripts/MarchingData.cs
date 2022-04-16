@@ -7,7 +7,7 @@ public static class MarchingData
 
 
   public static readonly int width = 32;
-  public static readonly int height = 32;
+  public static readonly int height = 128;
 
   public static readonly Vector3Int[] CornerTable = new Vector3Int[8] {
       new Vector3Int(0, 0, 0),

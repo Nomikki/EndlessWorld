@@ -14,10 +14,9 @@ public class marching : MonoBehaviour
   MeshCollider meshCollider;
 
   float terrainSurface = 0.5f;
-  
+
   TerrainPoint[,,] terrainMap;
 
-  int _configIndex = -1;
 
   private void Start()
   {
@@ -109,7 +108,7 @@ public class marching : MonoBehaviour
     float py = transform.position.y;
     float pz = transform.position.z;
 
-    float terrainHeight = 32;
+    float terrainHeight = MarchingData.height;
 
     for (int x = 0; x < MarchingData.width + 1; x++)
     {
@@ -119,14 +118,18 @@ public class marching : MonoBehaviour
         int dx = (int)(px + x);
         int dz = (int)(pz + z);
 
-        float thisHeight = Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f) / 2 + 0.5f, 0, 1);
+        float thisHeight = Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1);
 
         int textureID = 0;
 
-        if (thisHeight > 0.25f)
-        {
+        if (thisHeight < 0.25f)
+          textureID = 0;
+        else if (thisHeight < 0.45f)
           textureID = 1;
-        }
+        else if (thisHeight < 0.65)
+          textureID = 2;
+        else
+          textureID = 3;
 
         thisHeight *= terrainHeight;
 
