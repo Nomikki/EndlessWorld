@@ -178,6 +178,6 @@ public class PlayerController : MonoBehaviour
 
   public Vector3 GetPosition()
   {
-    return controller.transform.position;
+    return transform.position;
   }
 }
