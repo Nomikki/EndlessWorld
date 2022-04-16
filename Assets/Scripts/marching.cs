@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class marching : MonoBehaviour
+public class Marching : MonoBehaviour
 {
 
   List<Vector3> vertices = new List<Vector3>();
@@ -28,29 +28,19 @@ public class marching : MonoBehaviour
 
     PopulateTerrainMap();
     CreateMeshData();
-    BuildMesh();
+
   }
 
   void CreateMeshData()
   {
+    ClearMesh();
+
     for (int x = 0; x < MarchingData.width; x++)
-    {
       for (int y = 0; y < MarchingData.height; y++)
-      {
         for (int z = 0; z < MarchingData.width; z++)
-        {
-          float[] cube = new float[8];
-          for (int i = 0; i < 8; i++)
-          {
-            Vector3Int corner = new Vector3Int(x, y, z) + MarchingData.CornerTable[i];
-            cube[i] = terrainMap[corner.x, corner.y, corner.z].dstSurface;
-          }
+          MarchCube(new Vector3Int(x, y, z));
 
-          MarchCube(new Vector3(x, y, z), cube);
-
-        }
-      }
-    }
+    BuildMesh();
   }
 
   void ClearMesh()
@@ -98,7 +88,6 @@ public class marching : MonoBehaviour
       frequency *= lacunarity;
     }
 
-
     return noiseHeight;
   }
 
@@ -134,16 +123,19 @@ public class marching : MonoBehaviour
         thisHeight *= terrainHeight;
 
         for (int y = 0; y < MarchingData.height + 1; y++)
-        {
           terrainMap[x, y, z] = new TerrainPoint(y > thisHeight ? 1 : 0, textureID);
-        }
 
       }
     }
   }
 
-  void MarchCube(Vector3 position, float[] cube)
+  void MarchCube(Vector3Int position)
   {
+    float[] cube = new float[8];
+    for (int i = 0; i < 8; i++)
+      cube[i] = SampleTerrain(position + MarchingData.CornerTable[i]);
+
+
     int configIndex = GetCubeConfiguration(cube);
 
     if (configIndex == 0 || configIndex == 255)
@@ -189,6 +181,9 @@ public class marching : MonoBehaviour
     return configIndex;
   }
 
-
+  float SampleTerrain(Vector3Int point)
+  {
+    return terrainMap[point.x, point.y, point.z].dstSurface;
+  }
 
 }
