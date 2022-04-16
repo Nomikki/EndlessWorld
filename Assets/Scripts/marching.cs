@@ -28,7 +28,6 @@ public class Marching : MonoBehaviour
     smoothTerrain = WorldGenerator.Instance.smoothTerrain;
     PopulateTerrainMap();
     CreateMeshData();
-
   }
 
   void CreateMeshData()
@@ -104,8 +103,8 @@ public class Marching : MonoBehaviour
 
       for (int z = 0; z < MarchingData.width + 1; z++)
       {
-        int dx = (int)(px + x);
-        int dz = (int)(pz + z);
+        int dx = (int)(px + x + WorldGenerator.Instance.randomOffset.x);
+        int dz = (int)(pz + z + WorldGenerator.Instance.randomOffset.y);
 
         float thisHeight = Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1);
         int textureID = 0;
