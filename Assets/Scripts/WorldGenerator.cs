@@ -12,6 +12,7 @@ public class WorldGenerator : MonoBehaviour
 
   public GameObject MarchingCubePrefab;
   public int sizeOfMap = 256;
+  public bool smoothTerrain = true;
 
   public Texture2DArray terrainTexArray;
   public Texture2D[] terrainTextures;

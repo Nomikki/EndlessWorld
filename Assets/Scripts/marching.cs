@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Marching : MonoBehaviour
 {
-
+  public bool smoothTerrain = true;
   List<Vector3> vertices = new List<Vector3>();
   List<int> triangles = new List<int>();
   List<Vector2> uvs = new List<Vector2>();
@@ -25,7 +25,7 @@ public class Marching : MonoBehaviour
     meshCollider = GetComponent<MeshCollider>();
     meshRenderer.material.SetTexture("_TexArr", WorldGenerator.Instance.terrainTexArray);
     terrainMap = new TerrainPoint[MarchingData.width + 1, MarchingData.height + 1, MarchingData.width + 1];
-
+    smoothTerrain = WorldGenerator.Instance.smoothTerrain;
     PopulateTerrainMap();
     CreateMeshData();
 
@@ -108,7 +108,6 @@ public class Marching : MonoBehaviour
         int dz = (int)(pz + z);
 
         float thisHeight = Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1);
-
         int textureID = 0;
 
         if (thisHeight < 0.25f)
@@ -123,7 +122,7 @@ public class Marching : MonoBehaviour
         thisHeight *= terrainHeight;
 
         for (int y = 0; y < MarchingData.height + 1; y++)
-          terrainMap[x, y, z] = new TerrainPoint(y > thisHeight ? 1 : 0, textureID);
+          terrainMap[x, y, z] = new TerrainPoint((float)y - thisHeight, textureID);
 
       }
     }
@@ -154,7 +153,28 @@ public class Marching : MonoBehaviour
         Vector3 vert1 = position + MarchingData.CornerTable[MarchingData.EdgeIndexes[indice, 0]];
         Vector3 vert2 = position + MarchingData.CornerTable[MarchingData.EdgeIndexes[indice, 1]];
 
-        Vector3 vertPosition = (vert1 + vert2) / 2.0f;
+        Vector3 vertPosition;
+
+        if (smoothTerrain == true)
+        {
+          float vert1Sample = cube[MarchingData.EdgeIndexes[indice, 0]];
+          float vert2Sample = cube[MarchingData.EdgeIndexes[indice, 1]];
+          float difference = vert2Sample - vert1Sample;
+
+          if (difference == 0)
+            difference = terrainSurface;
+          else
+            difference = (terrainSurface - vert1Sample) / difference;
+
+          vertPosition = vert1 + ((vert2 - vert1) * difference);
+        }
+        else
+        {
+          vertPosition = (vert1 + vert2) / 2.0f;
+        }
+
+
+
         vertices.Add(vertPosition);
         triangles.Add(vertices.Count - 1);
 
