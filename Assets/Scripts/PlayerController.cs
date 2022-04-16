@@ -164,6 +164,14 @@ public class PlayerController : MonoBehaviour
     ProcessInputs();
     ProcessLook();
     ProcessMovement();
+  }
 
+  public Vector3Int GetChunkPosition() {
+    Vector3 p = controller.transform.position / MarchingData.width;
+    return new Vector3Int((int)p.x, (int)p.y, (int)p.z);
+  }
+
+  public Vector3 GetPosition() {
+    return controller.transform.position;
   }
 }

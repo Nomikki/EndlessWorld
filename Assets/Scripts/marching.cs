@@ -104,8 +104,6 @@ public class Marching : MonoBehaviour
 
     float terrainHeight = MarchingData.height;
 
-
-
     for (int x = 0; x < MarchingData.width + 1; x++)
     {
 
@@ -113,8 +111,6 @@ public class Marching : MonoBehaviour
       {
         int dx = (int)(px + x + WorldGenerator.Instance.randomOffset.x);
         int dz = (int)(pz + z + WorldGenerator.Instance.randomOffset.y);
-
-
 
         float thisHeight = Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1);
         int textureID = 0;
