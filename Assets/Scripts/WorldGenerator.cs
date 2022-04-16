@@ -73,38 +73,55 @@ public class WorldGenerator : MonoBehaviour
 
     debugText = GameObject.Find("Debug Info").GetComponent<TextMeshProUGUI>();
     player = GameObject.Find("PlayerController").GetComponent<PlayerController>();
-    CheckViewDistance();
+    CheckViewDistance(viewDistanceMax, viewDistanceMax);
 
   }
 
   bool IsChunkExists(Vector2 newP)
   {
-    bool foundOnCreatedList = false;
+    for (int i = 0; i < buildList.Count; i++)
+    {
+      if (buildList[i] == newP)
+        return true;
+    }
 
     for (int i = 0; i < createdList.Count; i++)
     {
       if (createdList[i] == newP)
-      {
-        foundOnCreatedList = true;
-        break;
-      }
+        return true;
     }
-    return foundOnCreatedList;
+    return false;
   }
 
-  void CheckViewDistance()
+  void TryCreateChunkTo(int x, int y)
+  {
+    Vector2 newP = new Vector2(x, y);
+    if (IsChunkExists(newP) == false)
+      buildList.Add(newP);
+  }
+
+  void CheckViewDistance(int min, int max)
   {
     //buildList.Clear();
-    int distance = viewDistanceMin / 2;
+    int distance = min / 2;
     Vector3Int p2 = playerInChunk * (int)MarchingData.width;
 
-    for (int x = p2.x - distance; x < p2.x + distance; x += MarchingData.width)
+    
+    for (int l = 0; l < distance; l += MarchingData.width)
     {
-      for (int z = p2.z - distance; z < p2.z + distance; z += MarchingData.width)
+      for (int x = p2.x - l; x <= p2.x + l; x += MarchingData.width)
       {
-        Vector2 newP = new Vector2(x, z);
-        if (IsChunkExists(newP) == false)
-          buildList.Add(newP);
+        for (int y = p2.z - l; y <= p2.z + l; y += MarchingData.width)
+        {
+          if (x == p2.x - l)
+            TryCreateChunkTo(x, y);
+          if (x == p2.x + l)
+            TryCreateChunkTo(x, y);
+          if (y == p2.z - l)
+            TryCreateChunkTo(x, y);
+          if (y == p2.z + l)
+            TryCreateChunkTo(x, y);
+        }
       }
     }
 
@@ -116,7 +133,7 @@ public class WorldGenerator : MonoBehaviour
     {
       Vector2 d = new Vector2(createdList[i].x, createdList[i].y);
       float dst = Vector2.Distance(d, playerPos);
-      if (dst > viewDistanceMax)
+      if (dst > max)
       {
 
         Object.Destroy(chunkList[i].gameObject);
@@ -138,9 +155,7 @@ public class WorldGenerator : MonoBehaviour
     if (newPos.x != playerInChunk.x || newPos.z != playerInChunk.z)
     {
       playerInChunk = newPos;
-      CheckViewDistance();
-
-
+      CheckViewDistance(viewDistanceMin, viewDistanceMax);
     }
 
     Vector3 p = player.GetPosition();
