@@ -166,8 +166,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b7ef20e61ece86488b24671d8a1e503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldSeed: 3
+  randomOffset: {x: 0, y: 0}
+  chunkMaster: {fileID: 0}
   MarchingCubePrefab: {fileID: 5034883186033633466, guid: 4620190d9dc2e674db7f6da76db0760c, type: 3}
+  IslandPrefab: {fileID: 2266992796588407842, guid: 34f05afaa85fa0d4e86aab89394d0f11, type: 3}
   sizeOfMap: 256
+  smoothTerrain: 1
   terrainTexArray: {fileID: 0}
   terrainTextures:
   - {fileID: 2800000, guid: ec15311caca04d841886b2099c728e6a, type: 3}
@@ -628,7 +633,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2067767009}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 23.4863, y: 73.66069, z: 117.0863}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

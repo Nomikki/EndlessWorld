@@ -17,8 +17,13 @@ public class Marching : MonoBehaviour
 
   TerrainPoint[,,] terrainMap;
 
-
   private void Start()
+  {
+    Build();
+
+  }
+
+  public void Build()
   {
     meshFilter = GetComponent<MeshFilter>();
     meshRenderer = GetComponent<MeshRenderer>();
@@ -26,6 +31,7 @@ public class Marching : MonoBehaviour
     meshRenderer.material.SetTexture("_TexArr", WorldGenerator.Instance.terrainTexArray);
     terrainMap = new TerrainPoint[MarchingData.width + 1, MarchingData.height + 1, MarchingData.width + 1];
     smoothTerrain = WorldGenerator.Instance.smoothTerrain;
+
     PopulateTerrainMap();
     CreateMeshData();
   }
@@ -98,6 +104,8 @@ public class Marching : MonoBehaviour
 
     float terrainHeight = MarchingData.height;
 
+
+
     for (int x = 0; x < MarchingData.width + 1; x++)
     {
 
@@ -105,6 +113,8 @@ public class Marching : MonoBehaviour
       {
         int dx = (int)(px + x + WorldGenerator.Instance.randomOffset.x);
         int dz = (int)(pz + z + WorldGenerator.Instance.randomOffset.y);
+
+
 
         float thisHeight = Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1);
         int textureID = 0;
