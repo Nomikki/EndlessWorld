@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
   public LayerMask castingMask;
-
+  public bool locked = true;
   public float walkSpeed = 7;
 
   public float mouseSensitivityX = 1;
@@ -75,8 +75,8 @@ public class PlayerController : MonoBehaviour
     accMouseX = Mathf.Lerp(accMouseX, inputLookX, mouseSnappiness * Time.deltaTime);
     accMouseY = Mathf.Lerp(accMouseY, inputLookY, mouseSnappiness * Time.deltaTime);
 
-    float mouseX = accMouseX * mouseSensitivityX * 100.0f * Time.deltaTime;
-    float mouseY = accMouseY * mouseSensitivityY * 100.0f * Time.deltaTime;
+    float mouseX = accMouseX * mouseSensitivityX;
+    float mouseY = accMouseY * mouseSensitivityY;
 
     xRotation += (invertLookY == true ? mouseY : -mouseY);
     xRotation = Mathf.Clamp(xRotation, -clampLookY, clampLookY);
@@ -117,7 +117,8 @@ public class PlayerController : MonoBehaviour
         fauxGravity.y = Mathf.Lerp(fauxGravity.y, -1, 4 * Time.deltaTime);
       }
 
-      if (inputKeyJump) {
+      if (inputKeyJump)
+      {
         fauxGravity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
       }
 
@@ -161,17 +162,22 @@ public class PlayerController : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    ProcessInputs();
-    ProcessLook();
-    ProcessMovement();
+    if (!locked)
+    {
+      ProcessInputs();
+      ProcessLook();
+      ProcessMovement();
+    }
   }
 
-  public Vector3Int GetChunkPosition() {
+  public Vector3Int GetChunkPosition()
+  {
     Vector3 p = controller.transform.position / MarchingData.width;
     return new Vector3Int((int)p.x, (int)p.y, (int)p.z);
   }
 
-  public Vector3 GetPosition() {
+  public Vector3 GetPosition()
+  {
     return controller.transform.position;
   }
 }

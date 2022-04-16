@@ -18,7 +18,8 @@ public class WorldGenerator : MonoBehaviour
   GameObject chunkMaster;
 
   public GameObject MarchingCubePrefab;
-  public int viewDistance = 256;
+  public int viewDistanceMin = 256;
+  public int viewDistanceMax = 256;
   public bool smoothTerrain = true;
 
   // our textures
@@ -73,33 +74,37 @@ public class WorldGenerator : MonoBehaviour
     debugText = GameObject.Find("Debug Info").GetComponent<TextMeshProUGUI>();
     player = GameObject.Find("PlayerController").GetComponent<PlayerController>();
     CheckViewDistance();
-    
+
+  }
+
+  bool IsChunkExists(Vector2 newP)
+  {
+    bool foundOnCreatedList = false;
+
+    for (int i = 0; i < createdList.Count; i++)
+    {
+      if (createdList[i] == newP)
+      {
+        foundOnCreatedList = true;
+        break;
+      }
+    }
+    return foundOnCreatedList;
   }
 
   void CheckViewDistance()
   {
     //buildList.Clear();
-    int distance = viewDistance / 2;
+    int distance = viewDistanceMin / 2;
     Vector3Int p2 = playerInChunk * (int)MarchingData.width;
 
     for (int x = p2.x - distance; x < p2.x + distance; x += MarchingData.width)
     {
       for (int z = p2.z - distance; z < p2.z + distance; z += MarchingData.width)
       {
-        bool foundOnCreatedList = false;
         Vector2 newP = new Vector2(x, z);
-        for (int i = 0; i < createdList.Count; i++)
-        {
-          if (createdList[i] == newP)
-          {
-            foundOnCreatedList = true;
-            break;
-          }
-        }
-        if (foundOnCreatedList == false)
-        {
+        if (IsChunkExists(newP) == false)
           buildList.Add(newP);
-        }
       }
     }
 
@@ -107,11 +112,11 @@ public class WorldGenerator : MonoBehaviour
 
     Vector2 playerPos = new Vector2(p2.x, p2.z);
     //and destroy if chunk is too far away
-    for (int i = createdList.Count - 1; i > 0; i--)
+    for (int i = createdList.Count - 1; i >= 0; i--)
     {
       Vector2 d = new Vector2(createdList[i].x, createdList[i].y);
       float dst = Vector2.Distance(d, playerPos);
-      if (dst > distance * 2)
+      if (dst > viewDistanceMax)
       {
 
         Object.Destroy(chunkList[i].gameObject);
@@ -157,9 +162,9 @@ public class WorldGenerator : MonoBehaviour
       createdList.Add(buildList[0]);
       chunkList.Add(gob.GetComponent<Marching>());
       buildList.RemoveAt(0);
-      //yield return null;
-      yield return new WaitForSeconds(.02f);
+      yield return null;
     }
+    player.locked = false;
   }
 
   void PopulateTextureArray()

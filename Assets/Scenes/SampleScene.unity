@@ -171,7 +171,8 @@ MonoBehaviour:
   debugText: {fileID: 1296038076}
   player: {fileID: 1680213671}
   MarchingCubePrefab: {fileID: 5034883186033633466, guid: 4620190d9dc2e674db7f6da76db0760c, type: 3}
-  viewDistance: 256
+  viewDistanceMin: 512
+  viewDistanceMax: 1280
   smoothTerrain: 1
   terrainTexArray: {fileID: 0}
   terrainTextures:
@@ -878,6 +879,7 @@ MonoBehaviour:
   castingMask:
     serializedVersion: 2
     m_Bits: 55
+  locked: 1
   walkSpeed: 7
   mouseSensitivityX: 1
   mouseSensitivityY: 1
