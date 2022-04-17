@@ -20,7 +20,6 @@ public class Marching : MonoBehaviour
   private void Start()
   {
     Build();
-
   }
 
   public void Build()
@@ -44,6 +43,7 @@ public class Marching : MonoBehaviour
       for (int y = 0; y < MarchingData.height; y++)
         for (int z = 0; z < MarchingData.width; z++)
           MarchCube(new Vector3Int(x, y, z));
+          
 
     BuildMesh();
   }
@@ -104,30 +104,47 @@ public class Marching : MonoBehaviour
 
     float terrainHeight = MarchingData.height;
 
+    int dx = 0;
+    int dz = 0;
+    float thisHeight = 0;
+    MarchingData.BiomeTypes textureID = 0;
+
     for (int x = 0; x < MarchingData.width + 1; x++)
     {
 
       for (int z = 0; z < MarchingData.width + 1; z++)
       {
-        int dx = (int)(px + x + WorldGenerator.Instance.randomOffset.x);
-        int dz = (int)(pz + z + WorldGenerator.Instance.randomOffset.y);
+        dx = (int)(px + x + WorldGenerator.Instance.randomOffset.x);
+        dz = (int)(pz + z + WorldGenerator.Instance.randomOffset.y);
 
-        float thisHeight = Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1);
-        int textureID = 0;
+        thisHeight = Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1);
+        
+        textureID = MarchingData.BiomeTypes.rock;
 
-        if (thisHeight < 0.25f)
-          textureID = 0;
-        else if (thisHeight < 0.45f)
-          textureID = 1;
-        else if (thisHeight < 0.65)
-          textureID = 2;
-        else
-          textureID = 3;
+
+        float biomeVariation = (thisHeight + Mathf.Clamp(Noise(dx*2, dz*2, 100, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1))/2;
 
         thisHeight *= terrainHeight;
+        
 
         for (int y = 0; y < MarchingData.height + 1; y++)
-          terrainMap[x, y, z] = new TerrainPoint((float)y - thisHeight, textureID);
+        {
+          float yPos = (float)y - thisHeight;
+          if (y == (int)thisHeight)
+          {
+            if (biomeVariation < 0.25f)
+              textureID = MarchingData.BiomeTypes.sand;
+            else if (biomeVariation < 0.45f)
+              textureID = MarchingData.BiomeTypes.grass;
+            else if (biomeVariation < 0.65)
+              textureID = MarchingData.BiomeTypes.rock;
+            else
+              textureID = MarchingData.BiomeTypes.snow;
+          
+
+          }
+          terrainMap[x, y, z] = new TerrainPoint(yPos, (int)textureID);
+        }
 
       }
     }
@@ -178,19 +195,14 @@ public class Marching : MonoBehaviour
           vertPosition = (vert1 + vert2) / 2.0f;
         }
 
-
-
         vertices.Add(vertPosition);
         triangles.Add(vertices.Count - 1);
 
         uvs.Add(new Vector2(terrainMap[(int)vertPosition.x, (int)vertPosition.y, (int)vertPosition.z].textureID, 0));
 
         edgeIndex++;
-
-
       }
     }
-
   }
 
   int GetCubeConfiguration(float[] cube)

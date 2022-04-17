@@ -4,7 +4,12 @@ using UnityEngine;
 
 public static class MarchingData
 {
-
+  public enum BiomeTypes {
+    sand = 0,
+    grass = 1,
+    rock = 2,
+    snow = 3
+  };
 
   public static readonly int width = 32;
   public static readonly int height = 128;

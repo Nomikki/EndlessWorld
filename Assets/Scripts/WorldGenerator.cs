@@ -84,17 +84,27 @@ public class WorldGenerator : MonoBehaviour
 
   bool IsChunkExists(Vector2 newP)
   {
+    //buildList.Contains()
+    /*
     for (int i = 0; i < buildList.Count; i++)
     {
       if (buildList[i] == newP)
         return true;
     }
+    */
+    if (buildList.Contains(newP))
+      return true;
 
+    /*
     for (int i = 0; i < createdList.Count; i++)
     {
       if (createdList[i] == newP)
         return true;
     }
+    */
+    if (createdList.Contains(newP))
+      return true;
+
     return false;
   }
 
@@ -140,7 +150,7 @@ public class WorldGenerator : MonoBehaviour
     }
 
 
-   waterObject.transform.position = new Vector3(p2.x, seaHeight, p2.z);
+    waterObject.transform.position = new Vector3(p2.x, seaHeight, p2.z);
 
     StartCoroutine(PopulateChunks());
 
@@ -164,9 +174,9 @@ public class WorldGenerator : MonoBehaviour
 
   IEnumerator PopulateChunks()
   {
+    int counter = 0;
     while (buildList.Count > 0)
     {
-
       int x = (int)buildList[0].x;
       int z = (int)buildList[0].y;
       GameObject gob = Instantiate(MarchingCubePrefab, new Vector3(x, 0, z), Quaternion.identity);
@@ -176,7 +186,13 @@ public class WorldGenerator : MonoBehaviour
       createdList.Add(buildList[0]);
       chunkList.Add(gob.GetComponent<Marching>());
       buildList.RemoveAt(0);
-      yield return null;
+      counter++;
+
+      if (counter > 2) {
+        counter = 0;
+        yield return null;
+        
+      }
     }
     player.locked = false;
   }
