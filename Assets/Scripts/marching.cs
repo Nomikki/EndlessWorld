@@ -96,6 +96,14 @@ public class Marching : MonoBehaviour
     return noiseHeight;
   }
 
+  float Get2DPerlin(Vector2 position, float offset, float scale)
+  {
+    position.x += (offset + 0.1f);
+    position.y += (offset + 0.1f);
+
+    return Mathf.PerlinNoise(position.x / MarchingData.width * scale, position.y / MarchingData.width * scale);
+  }
+
   void PopulateTerrainMap()
   {
     float px = transform.position.x;
@@ -104,10 +112,12 @@ public class Marching : MonoBehaviour
 
     float terrainHeight = MarchingData.height;
 
-    int dx = 0;
-    int dz = 0;
+    float dx = 0;
+    float dz = 0;
     float thisHeight = 0;
-    MarchingData.BiomeTypes textureID = 0;
+    int textureID = 0;
+
+    int solidGroundHeight = 20;
 
     for (int x = 0; x < MarchingData.width + 1; x++)
     {
@@ -117,21 +127,61 @@ public class Marching : MonoBehaviour
         dx = (int)(px + x + WorldGenerator.Instance.randomOffset.x);
         dz = (int)(pz + z + WorldGenerator.Instance.randomOffset.y);
 
-        thisHeight = Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1);
+
+        //biome pass
+        float strongestWeight = 0;
+        int strongestBiomeIndex = 0;
+        int count = 0;
+        float sumOfHeight = 0;
+
+        for (int i = 0; i < WorldGenerator.Instance.biomes.Length; i++)
+        {
+          BiomeAttributes tempBiome = WorldGenerator.Instance.biomes[i];
+          float weight = Get2DPerlin(new Vector2(dx, dz), tempBiome.offset, tempBiome.scale);
+          if (weight > strongestWeight)
+          {
+            strongestWeight = weight;
+            strongestBiomeIndex = i;
+          }
+
+          float height = tempBiome.terrainHeight * Get2DPerlin(new Vector2(dx, dz), 0, tempBiome.terrainScale) * weight;
+
+          if (height > 0)
+          {
+            sumOfHeight += height;
+            count++;
+          }
+          //Debug.Log(i + ": " + height);
+        }
+
+        BiomeAttributes biome = WorldGenerator.Instance.biomes[strongestBiomeIndex];
+        if (sumOfHeight > 0)
+          sumOfHeight /= count;
+
+        //Debug.Log(sumOfHeight);
+
+
+        //height pass
+
+        //thisHeight = Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1);
+        thisHeight = Mathf.Clamp(solidGroundHeight + sumOfHeight, 0, MarchingData.height);
         
-        textureID = MarchingData.BiomeTypes.rock;
-
-
-        float biomeVariation = (thisHeight + Mathf.Clamp(Noise(dx*2, dz*2, 100, 8, 0.5f, 2.0f) / 2.0f + 0.5f, 0, 1))/2;
-
-        thisHeight *= terrainHeight;
         
+        float hight = (Mathf.Clamp(Noise(dx, dz, 200, 8, 0.5f, 2.0f), 0, 1) * 128);
+        float low = (Mathf.Clamp(Noise(dx, dz, 1000, 10, 0.5f, 2.0f), 0, 1) * 128);
+
+
+
+        thisHeight = Mathf.Clamp(thisHeight + (hight > low ? hight : low), 0, 128);
+
 
         for (int y = 0; y < MarchingData.height + 1; y++)
         {
           float yPos = (float)y - thisHeight;
+          
           if (y == (int)thisHeight)
           {
+            /*
             if (biomeVariation < 0.25f)
               textureID = MarchingData.BiomeTypes.sand;
             else if (biomeVariation < 0.45f)
@@ -140,12 +190,43 @@ public class Marching : MonoBehaviour
               textureID = MarchingData.BiomeTypes.rock;
             else
               textureID = MarchingData.BiomeTypes.snow;
-          
-
+              */
+              textureID = biome.surfaceBlock;
+          } else {
+            textureID = biome.subsurfaceBlock;
           }
+          
           terrainMap[x, y, z] = new TerrainPoint(yPos, (int)textureID);
         }
 
+        //generate trees
+        /* 
+        if (thisHeight > WorldGenerator.Instance.seaHeight)
+        {
+          int tree = Random.Range(0, 4);
+
+          if (textureID == 1)
+          {
+            
+            if (Random.Range(0, 100) > 85)
+            {
+              GameObject gob = Instantiate(WorldGenerator.Instance.TreePrefabs[tree], new Vector3(x + px, thisHeight, z + pz), Quaternion.Euler(-90 + Random.Range(-15, 15),  Random.Range(0, 360), 0));
+              float r = Random.Range(80f, 160f);
+              gob.transform.localScale = new Vector3(r, r, r);
+              gob.transform.SetParent(this.transform);
+            }
+          } else if (textureID == 2)
+          {
+            if (Random.Range(0, 100) > 98)
+            {
+              float r = Random.Range(80f, 160f);
+              GameObject gob = Instantiate(WorldGenerator.Instance.TreePrefabs[tree], new Vector3(x + px, thisHeight, z + pz), Quaternion.Euler(-90 + Random.Range(-15, 15),  Random.Range(0, 360), 0));
+              gob.transform.localScale = new Vector3(r, r, r);
+              gob.transform.SetParent(this.transform);
+            }
+          }
+        }
+         */
       }
     }
   }

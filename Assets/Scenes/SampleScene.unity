@@ -166,16 +166,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b7ef20e61ece86488b24671d8a1e503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomes:
+  - {fileID: 11400000, guid: ff56663e951b9bd4a92134b21b32ca54, type: 2}
+  - {fileID: 11400000, guid: c69a7c8a9ff52b0498b40caf0b3f4840, type: 2}
+  - {fileID: 11400000, guid: 89b32298d9f800b418528506d38449f7, type: 2}
   worldSeed: 3
   randomOffset: {x: 0, y: 0}
   debugText: {fileID: 1296038076}
   player: {fileID: 1680213671}
-  seaHeight: 45
+  seaHeight: 25
   MarchingCubePrefab: {fileID: 5034883186033633466, guid: 4620190d9dc2e674db7f6da76db0760c, type: 3}
   viewDistanceMin: 128
-  viewDistanceMax: 1024
+  viewDistanceMax: 512
   smoothTerrain: 1
   WaterPrefab: {fileID: 3906834785610984737, guid: ff33e3c40b8ba714c820b359585bf203, type: 3}
+  TreePrefabs:
+  - {fileID: 1593959556934080471, guid: ef25ca6eac649684eb412dc02e2d6443, type: 3}
+  - {fileID: 6626866405270037588, guid: 13706d034e047db4494f48de17d3ca54, type: 3}
+  - {fileID: 3263171489993326042, guid: e54d4b7b8f10c944aae7cc40696ca6cb, type: 3}
+  - {fileID: 4085025470469268884, guid: c42116e284f145a4e982ec0b6f386b25, type: 3}
   terrainTexArray: {fileID: 0}
   terrainTextures:
   - {fileID: 2800000, guid: ec15311caca04d841886b2099c728e6a, type: 3}
@@ -697,7 +706,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1579310080}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 100, y: -14, z: 100}
+  m_LocalPosition: {x: 0, y: -14, z: 0}
   m_LocalScale: {x: 50, y: 50, z: 50}
   m_Children: []
   m_Father: {fileID: 1680213670}
