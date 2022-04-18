@@ -176,8 +176,8 @@ MonoBehaviour:
   player: {fileID: 1680213671}
   seaHeight: 25
   MarchingCubePrefab: {fileID: 5034883186033633466, guid: 4620190d9dc2e674db7f6da76db0760c, type: 3}
-  viewDistanceMin: 128
-  viewDistanceMax: 512
+  viewDistanceMin: 512
+  viewDistanceMax: 1024
   smoothTerrain: 1
   WaterPrefab: {fileID: 3906834785610984737, guid: ff33e3c40b8ba714c820b359585bf203, type: 3}
   TreePrefabs:

@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Jobs;
+using Unity.Collections;
+using Unity.Jobs;
 
 public class Marching : MonoBehaviour
 {
@@ -8,6 +11,10 @@ public class Marching : MonoBehaviour
   List<Vector3> vertices = new List<Vector3>();
   List<int> triangles = new List<int>();
   List<Vector2> uvs = new List<Vector2>();
+
+  //NativeArray<Vector3> vertices = new NativeArray<Vector3>();
+  //NativeArray<int> triangles = new NativeArray<int>();
+  //NativeArray<Vector2> uvs = new NativeArray<Vector2>();
 
   MeshFilter meshFilter;
   MeshRenderer meshRenderer;
@@ -24,21 +31,21 @@ public class Marching : MonoBehaviour
 
   public void Build()
   {
+    
     meshFilter = GetComponent<MeshFilter>();
     meshRenderer = GetComponent<MeshRenderer>();
     meshCollider = GetComponent<MeshCollider>();
     meshRenderer.material.SetTexture("_TexArr", WorldGenerator.Instance.terrainTexArray);
+    
     terrainMap = new TerrainPoint[MarchingData.width + 1, MarchingData.height + 1, MarchingData.width + 1];
     smoothTerrain = WorldGenerator.Instance.smoothTerrain;
-
     PopulateTerrainMap();
     CreateMeshData();
   }
 
   void CreateMeshData()
   {
-    ClearMesh();
-
+    
     for (int x = 0; x < MarchingData.width; x++)
       for (int y = 0; y < MarchingData.height; y++)
         for (int z = 0; z < MarchingData.width; z++)
@@ -48,17 +55,13 @@ public class Marching : MonoBehaviour
     BuildMesh();
   }
 
-  void ClearMesh()
-  {
-    vertices.Clear();
-    triangles.Clear();
-    uvs.Clear();
-  }
 
   void BuildMesh()
   {
     Mesh mesh = new Mesh();
+    mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
     mesh.vertices = vertices.ToArray();
+    mesh.MarkDynamic();
     mesh.triangles = triangles.ToArray();
     mesh.uv = uvs.ToArray();
     mesh.RecalculateNormals();
@@ -253,8 +256,12 @@ public class Marching : MonoBehaviour
         if (indice == -1)
           return;
 
-        Vector3 vert1 = position + MarchingData.CornerTable[MarchingData.EdgeIndexes[indice, 0]];
-        Vector3 vert2 = position + MarchingData.CornerTable[MarchingData.EdgeIndexes[indice, 1]];
+        Vector3 v1 = (MarchingData.CornerTable[MarchingData.EdgeIndexes[indice, 0]]);
+        Vector3 v2 = (MarchingData.CornerTable[MarchingData.EdgeIndexes[indice, 1]]);
+
+        Vector3 vert1 = position + v1;
+        Vector3 vert2 = position + v2;
+
 
         Vector3 vertPosition;
 
@@ -276,11 +283,10 @@ public class Marching : MonoBehaviour
           vertPosition = (vert1 + vert2) / 2.0f;
         }
 
+  
         vertices.Add(vertPosition);
         triangles.Add(vertices.Count - 1);
-
         uvs.Add(new Vector2(terrainMap[(int)vertPosition.x, (int)vertPosition.y, (int)vertPosition.z].textureID, 0));
-
         edgeIndex++;
       }
     }

@@ -11,7 +11,7 @@ public static class MarchingData
     snow = 3
   };
 
-  public static readonly int width = 32;
+  public static readonly int width = 64;
   public static readonly int height = 128;
 
   public static readonly Vector3Int[] CornerTable = new Vector3Int[8] {
